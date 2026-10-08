@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Сосуды под давлением — Промбез</title>
+  <meta name="description" content="Тренажёр для подготовки к проверке знаний: сосуды, работающие под давлением. Теория, карточки, тесты, работа над ошибками.">
+  <meta name="theme-color" content="#1F2933" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Промбез">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Ко всем разделам" title="Все разделы">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Промбез</span>
+      <span class="brand-sep" aria-hidden="true">›</span>
+    </a>
+    <a class="brand brand-section" href="#home" aria-label="На главную раздела">Сосуды</a>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Сменить тему"></button>
+    </div>
+  </header>
+
+  <main id="screen" class="screen" tabindex="-1"></main>
+
+  <nav class="tabbar" aria-label="Разделы">
+    <a href="#theory" data-tab="theory"><span class="tab-icon" data-icon="book"></span><span>Теория</span></a>
+    <a href="#cards" data-tab="cards"><span class="tab-icon" data-icon="cards"></span><span>Карточки</span></a>
+    <a href="#quiz" data-tab="quiz"><span class="tab-icon" data-icon="quiz"></span><span>Тесты</span></a>
+    <a href="#mistakes" data-tab="mistakes"><span class="tab-icon" data-icon="mistakes"></span><span>Ошибки</span><span class="tab-badge" id="mistakes-badge" hidden></span></a>
+    <a href="#progress" data-tab="progress"><span class="tab-icon" data-icon="progress"></span><span>Прогресс</span></a>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript>Для работы тренажёра нужен JavaScript.</noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

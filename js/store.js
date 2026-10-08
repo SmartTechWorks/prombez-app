@@ -1,6 +1,8 @@
 import { todayKey } from './render.js';
 
-const KEY = 'prombez.v1';
+// Свой ключ: 'prombez.v1' занят тренажёром билетов (tickets/), он живёт на том же домене.
+const KEY = 'prombez.vessels.v1';
+const LEGACY_KEY = 'prombez.v1';
 
 const empty = () => ({
   q: {},        // id -> { seen, right, wrong, lastWrong }
@@ -8,7 +10,6 @@ const empty = () => ({
   cards: {},    // id -> 'know' | 'repeat'
   days: [],     // 'YYYY-MM-DD' с активностью
   last: null,   // последний открытый маршрут
-  theme: null,  // 'light' | 'dark' | null (системная)
   onboarded: false,
 });
 
@@ -18,7 +19,11 @@ let onError = () => {};
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    return raw ? { ...empty(), ...JSON.parse(raw) } : empty();
+    if (raw) return { ...empty(), ...JSON.parse(raw) };
+    // Первые сборки писали в общий ключ; подхватываем свои данные, чужие (билетов) не трогаем.
+    const legacy = JSON.parse(localStorage.getItem(LEGACY_KEY) || 'null');
+    if (legacy && legacy.q && !legacy.best) return { ...empty(), ...legacy };
+    return empty();
   } catch { return empty(); }
 }
 
@@ -72,7 +77,6 @@ export const store = {
   card(id) { return state.cards[id]; },
 
   setLast(route) { state.last = route; save(); },
-  setTheme(theme) { state.theme = theme; save(); },
   setOnboarded() { state.onboarded = true; save(); },
 
   /** Доля вопросов и последовательностей темы, на которые последний ответ верный. */
@@ -87,5 +91,5 @@ export const store = {
     return ok / total;
   },
 
-  reset() { state = { ...empty(), theme: state.theme, onboarded: true }; save(); },
+  reset() { state = { ...empty(), onboarded: true }; save(); },
 };

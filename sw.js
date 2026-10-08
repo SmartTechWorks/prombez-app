@@ -1,12 +1,18 @@
 // Поднимайте версию при любой правке файлов (в т.ч. JSON), иначе телефон будет жить со старым кэшем.
-const CACHE_VERSION = 'prombez-v2';
+const CACHE_VERSION = 'prombez-v3';
+const FONT_CACHE = 'prombez-fonts';
 
 const ASSETS = [
   './',
   './index.html',
+  './vessels.html',
+  './tickets/',
+  './tickets/index.html',
   './styles.css',
   './manifest.webmanifest',
   './js/app.js',
+  './js/hub.js',
+  './js/shell.js',
   './js/router.js',
   './js/store.js',
   './js/render.js',
@@ -36,7 +42,8 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE_VERSION).map((k) => caches.delete(k))))
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_VERSION && k !== FONT_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -45,10 +52,26 @@ self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') self.skipWaiting();
 });
 
-// Cache-first: всё своё лежит в кэше; сеть только как запасной путь и для обновления копии.
+const isFont = (url) => url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com');
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+
+  // Шрифт билетов (Google Fonts): кладём в кэш при первом удачном запросе, дальше офлайн.
+  if (isFont(url)) {
+    event.respondWith(
+      caches.match(req).then((cached) => cached || fetch(req).then((res) => {
+        if (res.ok) caches.open(FONT_CACHE).then((c) => c.put(req, res.clone()));
+        return res;
+      }))
+    );
+    return;
+  }
+  if (url.origin !== self.location.origin) return;
+
+  // Cache-first: всё своё лежит в кэше; сеть только как запасной путь и для обновления копии.
   event.respondWith(
     caches.match(req, { ignoreSearch: true }).then((cached) => {
       const fetched = fetch(req).then((res) => {

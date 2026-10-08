@@ -3,43 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Промбез: сосуды под давлением</title>
-  <meta name="description" content="Тренажёр для подготовки к проверке знаний: сосуды, работающие под давлением. Теория, карточки, тесты, работа над ошибками.">
+  <title>Промбез</title>
+  <meta name="description" content="Тренажёры для подготовки к проверке знаний по промышленной безопасности: экзаменационные билеты и сосуды под давлением.">
   <meta name="theme-color" content="#1F2933" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Промбез">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    body { padding-bottom: 24px; }
+    .hub { max-width: 640px; margin: 0 auto; padding: 8px 16px 32px; }
+    .hub-title { font-size: 30px; font-weight: 900; letter-spacing: -0.02em; margin: 18px 0 4px; }
+    .hub-sub { color: var(--muted); margin-bottom: 20px; }
+    .app-card {
+      display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center;
+      padding: 18px; border-radius: 20px; margin-bottom: 12px;
+      background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+      transition: transform .12s ease;
+    }
+    .app-card:active { transform: scale(0.985); }
+    .app-card .ico { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; color: #fff; }
+    .app-card .ico svg { width: 30px; height: 30px; }
+    .app-card h2 { margin: 0 0 2px; font-size: 19px; }
+    .app-card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .app-card .prog { margin-top: 8px; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+    .app-card .prog .bar { flex: 1; height: 6px; }
+    .app-card .chev { font-size: 26px; color: var(--muted); }
+    .hub-foot { color: var(--muted); font-size: 13px; text-align: center; margin-top: 24px; }
+  </style>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#home" aria-label="На главную">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-text">Промбез</span>
-    </a>
+    <span class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Промбез</span></span>
     <div class="topbar-actions">
       <button class="icon-btn" id="theme-toggle" type="button" aria-label="Сменить тему"></button>
     </div>
   </header>
+  <main class="hub">
+    <h1 class="hub-title">Что готовим?</h1>
+    <p class="hub-sub">Два тренажёра, у каждого свой прогресс и свои ошибки.</p>
 
-  <main id="screen" class="screen" tabindex="-1"></main>
+    <a class="app-card" href="tickets/" id="card-tickets">
+      <span class="ico" style="background: linear-gradient(135deg, #1d2733, #3b4a5a)"></span>
+      <span>
+        <h2>Экзаменационные билеты</h2>
+        <p>Промышленная безопасность, установки ШФЛУ № 1–5. 10 билетов, 90 вопросов.</p>
+        <span class="prog" id="prog-tickets" hidden></span>
+      </span>
+      <span class="chev">›</span>
+    </a>
 
-  <nav class="tabbar" aria-label="Разделы">
-    <a href="#theory" data-tab="theory"><span class="tab-icon" data-icon="book"></span><span>Теория</span></a>
-    <a href="#cards" data-tab="cards"><span class="tab-icon" data-icon="cards"></span><span>Карточки</span></a>
-    <a href="#quiz" data-tab="quiz"><span class="tab-icon" data-icon="quiz"></span><span>Тесты</span></a>
-    <a href="#mistakes" data-tab="mistakes"><span class="tab-icon" data-icon="mistakes"></span><span>Ошибки</span><span class="tab-badge" id="mistakes-badge" hidden></span></a>
-    <a href="#progress" data-tab="progress"><span class="tab-icon" data-icon="progress"></span><span>Прогресс</span></a>
-  </nav>
+    <a class="app-card" href="vessels.html" id="card-vessels">
+      <span class="ico" style="background: linear-gradient(135deg, #F59E0B, #F97316)"></span>
+      <span>
+        <h2>Сосуды под давлением</h2>
+        <p>Теория, карточки, тесты и «расставь по порядку». 16 тем, 245 вопросов.</p>
+        <span class="prog" id="prog-vessels" hidden></span>
+      </span>
+      <span class="chev">›</span>
+    </a>
 
+    <p class="hub-foot">Работает без интернета после первого открытия. Добавьте на главный экран: меню ⋮ → «Установить приложение».</p>
+  </main>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-
-  <noscript>Для работы тренажёра нужен JavaScript.</noscript>
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/hub.js"></script>
 </body>
 </html>

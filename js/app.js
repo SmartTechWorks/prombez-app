@@ -2,6 +2,7 @@ import { h, clear } from './render.js';
 import { store } from './store.js';
 import { onRoute, navigate } from './router.js';
 import { icon } from './figures.js';
+import { setupTheme, registerSw } from './shell.js';
 import * as home from './home.js';
 import * as theory from './theory.js';
 import * as cards from './cards.js';
@@ -26,20 +27,8 @@ function toast(text, action) {
   if (!action) toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2600);
 }
 
-// ---------- Тема ----------
-function systemTheme() { return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
-function applyTheme() {
-  const t = store.state.theme || systemTheme();
-  document.documentElement.dataset.theme = t;
-  document.getElementById('theme-toggle').innerHTML = icon(t === 'dark' ? 'sun' : 'moon');
-}
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  const current = store.state.theme || systemTheme();
-  store.setTheme(current === 'dark' ? 'light' : 'dark');
-  applyTheme();
-});
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
-applyTheme();
+// ---------- Тема (общая с хабом) ----------
+setupTheme();
 
 // ---------- Данные ----------
 async function loadJson(name) {
@@ -82,26 +71,6 @@ function showOnboarding() {
   document.body.append(overlay);
 }
 
-// ---------- Service worker ----------
-function registerSw() {
-  if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('sw.js').then((reg) => {
-    reg.addEventListener('updatefound', () => {
-      const w = reg.installing;
-      if (!w) return;
-      w.addEventListener('statechange', () => {
-        if (w.state === 'installed' && navigator.serviceWorker.controller) {
-          toast('Доступно обновление', { label: 'Обновить', onClick: () => w.postMessage('skipWaiting') });
-        }
-      });
-    });
-  }).catch(() => {});
-  let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloading) return; reloading = true; location.reload();
-  });
-}
-
 // ---------- Старт ----------
 async function main() {
   let data;
@@ -135,7 +104,7 @@ async function main() {
   });
 
   if (!store.state.onboarded) showOnboarding();
-  registerSw();
+  registerSw((apply) => toast('Доступно обновление', { label: 'Обновить', onClick: apply }));
 }
 
 main();
