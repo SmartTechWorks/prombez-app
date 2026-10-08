@@ -1,5 +1,5 @@
 // Поднимайте версию при любой правке файлов (в т.ч. JSON), иначе телефон будет жить со старым кэшем.
-const CACHE_VERSION = 'prombez-v1';
+const CACHE_VERSION = 'prombez-v2';
 
 const ASSETS = [
   './',

@@ -1,9 +1,10 @@
 {
+  "id": "/prombez-app/?v=2",
   "name": "Промбез: сосуды под давлением",
-  "short_name": "Промбез",
+  "short_name": "Сосуды",
   "description": "Тренажёр для подготовки к проверке знаний по сосудам, работающим под давлением.",
   "lang": "ru",
-  "start_url": "./",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
