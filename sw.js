@@ -1,84 +1,30 @@
-// Поднимайте версию при любой правке файлов (в т.ч. JSON), иначе телефон будет жить со старым кэшем.
-const CACHE_VERSION = 'prombez-v3';
-const FONT_CACHE = 'prombez-fonts';
+/* Выключатель. Приложение закрыто: кэш удаляется, все запросы получают заглушку. */
+const STUB = `<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1F2933"><title>Приложение больше не доступно</title>
+<style>html,body{height:100%;margin:0;background:#1F2933;color:#cfd6de;font:18px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box}</style>
+</head><body><p>Приложение больше не доступно</p>
+<script>(async()=>{try{localStorage.clear()}catch(e){}try{sessionStorage.clear()}catch(e){}try{if(indexedDB.databases){for(const d of await indexedDB.databases()){if(d.name)indexedDB.deleteDatabase(d.name)}}}catch(e){}try{for(const k of await caches.keys())await caches.delete(k)}catch(e){}})();</script>
+</body></html>`;
 
-const ASSETS = [
-  './',
-  './index.html',
-  './vessels.html',
-  './tickets/',
-  './tickets/index.html',
-  './styles.css',
-  './manifest.webmanifest',
-  './js/app.js',
-  './js/hub.js',
-  './js/shell.js',
-  './js/router.js',
-  './js/store.js',
-  './js/render.js',
-  './js/figures.js',
-  './js/home.js',
-  './js/theory.js',
-  './js/cards.js',
-  './js/quiz.js',
-  './js/sequence.js',
-  './js/results.js',
-  './js/mistakes.js',
-  './js/progress.js',
-  './data/topics.json',
-  './data/theory.json',
-  './data/cards.json',
-  './data/questions.json',
-  './data/sequences.json',
-  './icons/icon.svg',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/maskable-512.png',
-];
+const stubResponse = () => new Response(STUB, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(ASSETS)));
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_VERSION && k !== FONT_CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+    await self.clients.claim();
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of clients) {
+      try { await client.navigate(self.registration.scope); } catch (e) { /* окно закрыто или навигация запрещена */ }
+    }
+  })());
 });
-
-self.addEventListener('message', (event) => {
-  if (event.data === 'skipWaiting') self.skipWaiting();
-});
-
-const isFont = (url) => url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com');
 
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-
-  // Шрифт билетов (Google Fonts): кладём в кэш при первом удачном запросе, дальше офлайн.
-  if (isFont(url)) {
-    event.respondWith(
-      caches.match(req).then((cached) => cached || fetch(req).then((res) => {
-        if (res.ok) caches.open(FONT_CACHE).then((c) => c.put(req, res.clone()));
-        return res;
-      }))
-    );
-    return;
-  }
-  if (url.origin !== self.location.origin) return;
-
-  // Cache-first: всё своё лежит в кэше; сеть только как запасной путь и для обновления копии.
-  event.respondWith(
-    caches.match(req, { ignoreSearch: true }).then((cached) => {
-      const fetched = fetch(req).then((res) => {
-        if (res.ok) caches.open(CACHE_VERSION).then((c) => c.put(req, res.clone()));
-        return res;
-      }).catch(() => cached);
-      return cached || fetched;
-    })
-  );
+  event.respondWith(stubResponse());
 });

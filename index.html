@@ -3,73 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Промбез</title>
-  <meta name="description" content="Тренажёры для подготовки к проверке знаний по промышленной безопасности: экзаменационные билеты и сосуды под давлением.">
-  <meta name="theme-color" content="#1F2933" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1F2933">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Промбез">
+  <title>Приложение больше не доступно</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="styles.css">
   <style>
-    body { padding-bottom: 24px; }
-    .hub { max-width: 640px; margin: 0 auto; padding: 8px 16px 32px; }
-    .hub-title { font-size: 30px; font-weight: 900; letter-spacing: -0.02em; margin: 18px 0 4px; }
-    .hub-sub { color: var(--muted); margin-bottom: 20px; }
-    .app-card {
-      display: grid; grid-template-columns: 56px 1fr auto; gap: 14px; align-items: center;
-      padding: 18px; border-radius: 20px; margin-bottom: 12px;
-      background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
-      transition: transform .12s ease;
-    }
-    .app-card:active { transform: scale(0.985); }
-    .app-card .ico { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; color: #fff; }
-    .app-card .ico svg { width: 30px; height: 30px; }
-    .app-card h2 { margin: 0 0 2px; font-size: 19px; }
-    .app-card p { margin: 0; color: var(--muted); font-size: 14px; }
-    .app-card .prog { margin-top: 8px; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
-    .app-card .prog .bar { flex: 1; height: 6px; }
-    .app-card .chev { font-size: 26px; color: var(--muted); }
-    .hub-foot { color: var(--muted); font-size: 13px; text-align: center; margin-top: 24px; }
+    html, body { height: 100%; margin: 0; background: #1F2933; color: #cfd6de; font: 18px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    body { display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; box-sizing: border-box; }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <span class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-text">Промбез</span></span>
-    <div class="topbar-actions">
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Сменить тему"></button>
-    </div>
-  </header>
-  <main class="hub">
-    <h1 class="hub-title">Что готовим?</h1>
-    <p class="hub-sub">Два тренажёра, у каждого свой прогресс и свои ошибки.</p>
-
-    <a class="app-card" href="tickets/" id="card-tickets">
-      <span class="ico" style="background: linear-gradient(135deg, #1d2733, #3b4a5a)"></span>
-      <span>
-        <h2>Экзаменационные билеты</h2>
-        <p>Промышленная безопасность, установки ШФЛУ № 1–5. 10 билетов, 90 вопросов.</p>
-        <span class="prog" id="prog-tickets" hidden></span>
-      </span>
-      <span class="chev">›</span>
-    </a>
-
-    <a class="app-card" href="vessels.html" id="card-vessels">
-      <span class="ico" style="background: linear-gradient(135deg, #F59E0B, #F97316)"></span>
-      <span>
-        <h2>Сосуды под давлением</h2>
-        <p>Теория, карточки, тесты и «расставь по порядку». 16 тем, 245 вопросов.</p>
-        <span class="prog" id="prog-vessels" hidden></span>
-      </span>
-      <span class="chev">›</span>
-    </a>
-
-    <p class="hub-foot">Работает без интернета после первого открытия. Добавьте на главный экран: меню ⋮ → «Установить приложение».</p>
-  </main>
-  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <script type="module" src="js/hub.js"></script>
+  <p>Приложение больше не доступно</p>
+  <script>
+    (async () => {
+      try { localStorage.clear(); } catch (e) {}
+      try { sessionStorage.clear(); } catch (e) {}
+      try {
+        if (indexedDB.databases) {
+          for (const db of await indexedDB.databases()) { if (db.name) indexedDB.deleteDatabase(db.name); }
+        }
+      } catch (e) {}
+      try { for (const k of await caches.keys()) await caches.delete(k); } catch (e) {}
+      try { if ('serviceWorker' in navigator) await navigator.serviceWorker.register('sw.js'); } catch (e) {}
+    })();
+  </script>
 </body>
 </html>
